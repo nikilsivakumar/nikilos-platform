@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.Python
+*.egg-info/
+
+# Virtual environments
+nikilos/
+venv/
+env/
+.venv/
+
+# Environment secrets
+.env
+*.env
+!.env.example
+
+# Virtual Environments
+nikilos/
+venv/
+.venv/
+
+# Python byte-code / cache
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
+*.db
+*.sqlite3
+
+# Alembic (keep versions, ignore local db state if any)
+backend/alembic.ini.local
+
+# Logs
+*.log
+
+# Distribution / build
+dist/
+build/
+*.egg
