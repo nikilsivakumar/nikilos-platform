@@ -52,6 +52,14 @@ class CoachClient(Base):
     coach: Mapped["User"] = relationship(back_populates="clients", foreign_keys=[coach_id])
     client: Mapped["User"] = relationship(back_populates="coaching_relationships", foreign_keys=[client_id])
 
+    # The basic-intro info a coach can see while this row is still "pending" —
+    # goals + experience level only, never full logs (enforced in the
+    # permission-check code, not by this relationship existing). One intro
+    # per relationship, deleted automatically if the relationship row is.
+    intro: Mapped[Optional["ClientIntro"]] = relationship(
+        back_populates="coach_client", uselist=False, cascade="all, delete-orphan"
+    )
+
     # NOTE: client_intro (the pending-request goals/experience-level table
     # from docs/DOMAIN_MODEL.md) is not built yet. It gets added as its own
     # migration next, with a relationship added back here at that point —

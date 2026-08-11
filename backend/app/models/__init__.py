@@ -9,3 +9,4 @@ from app.models.users import User  # noqa: F401
 from app.models.coach_profiles import CoachProfile  # noqa: F401
 from app.models.coach_clients import CoachClient, CoachClientStatus  # noqa: F401
 from app.models.coach_billing import CoachBilling, BillingTier  # noqa: F401
+from app.models.client_intro import ClientIntro, ExperienceLevel  # noqa: F401
