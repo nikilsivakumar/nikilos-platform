@@ -30,6 +30,14 @@ class User(Base):
 
     name: Mapped[str] = mapped_column(String(255), nullable=False)
 
+    # Nullable because individuals aren't required to give a phone number —
+    # only coaches will be asked for one at profile creation. Unique so the
+    # same phone can't sit behind two separate accounts. This is a cheap,
+    # partial deterrent against one person creating multiple coach accounts
+    # to reset their free client slots — not a complete fix (see
+    # docs/DOMAIN_MODEL.md billing notes), just raises the cost of doing it.
+    phone_number: Mapped[Optional[str]] = mapped_column(String(20), unique=True, nullable=True)
+
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     # One user has at most one coach_profile (they become a coach by having one).
