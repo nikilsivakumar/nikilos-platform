@@ -182,4 +182,4 @@ def test_require_access_excludes_intro_only_from_full_data_routes(db):
     # ...but NOT a full-data route, even though a relationship row exists.
     with pytest.raises(HTTPException) as exc_info:
         require_access(db, coach.id, client.id, allowed={AccessLevel.OWN, AccessLevel.COACH_FULL})
-    assert exc_info.value.status_code == 403
+    assert exc_info.value.status_code == 403 
