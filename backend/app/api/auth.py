@@ -1,13 +1,30 @@
 """
-Signup, login, logout, and "who am I" -- email+password only for now.
-Google OAuth is a separate, later addition (Stage 3 continues after this).
+Signup, login, logout, "who am I" (email+password), and Google OAuth.
+
+Google OAuth flow, in plain terms:
+  1. User hits GET /auth/google/login -> we redirect them to Google's
+     consent screen.
+  2. User approves on Google's site (not ours -- we never see their
+     Google password).
+  3. Google redirects back to GET /auth/google/callback with a temporary
+     code. We exchange that code for the user's verified email/name, then
+     run the SAME account-linking logic used by nothing else in this file
+     (see app/core/google_auth.py) to find-or-create the matching local
+     User row, and issue the SAME cookie-based token as normal login.
+
+After step 3, a Google-authenticated user is indistinguishable from a
+password-authenticated one anywhere else in the app -- get_current_user
+doesn't know or care how you logged in.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from authlib.integrations.starlette_client import OAuth
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
 from app.api.deps import COOKIE_NAME, get_current_user
 from app.core.config import settings
+from app.core.google_auth import get_or_create_user_from_google
 from app.core.security import create_access_token, hash_password, verify_password
 from app.db.session import get_db
 from app.models.users import User
@@ -15,11 +32,16 @@ from app.schemas.auth import LoginRequest, SignupRequest, UserPublic
 
 router = APIRouter()
 
-# secure=True means the cookie is only ever sent over HTTPS. In local dev
-# you're on plain http://localhost, so this is tied to ENVIRONMENT --
-# flip to True automatically once ENVIRONMENT=production on the real VPS,
-# no code change needed at deploy time.
 COOKIE_SECURE = settings.ENVIRONMENT != "development"
+
+oauth = OAuth()
+oauth.register(
+    name="google",
+    client_id=settings.GOOGLE_CLIENT_ID,
+    client_secret=settings.GOOGLE_CLIENT_SECRET,
+    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+    client_kwargs={"scope": "openid email profile"},
+)
 
 
 def _set_auth_cookie(response: Response, user_id: int) -> None:
@@ -27,9 +49,9 @@ def _set_auth_cookie(response: Response, user_id: int) -> None:
     response.set_cookie(
         key=COOKIE_NAME,
         value=token,
-        httponly=True,          # JavaScript can never read this cookie -- the core XSS protection
+        httponly=True,
         secure=COOKIE_SECURE,
-        samesite="lax",         # sent on normal navigation/API calls from your own frontend, blocked cross-site
+        samesite="lax",
         max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         path="/",
     )
@@ -50,10 +72,7 @@ def signup(payload: SignupRequest, response: Response, db: Session = Depends(get
     db.commit()
     db.refresh(user)
 
-    # Log the user in immediately on signup -- no separate "please log in
-    # now" step, matches how most consumer apps behave.
     _set_auth_cookie(response, user.id)
-
     return user
 
 
@@ -61,8 +80,6 @@ def signup(payload: SignupRequest, response: Response, db: Session = Depends(get
 def login(payload: LoginRequest, response: Response, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == payload.email).first()
 
-    # Same error for "no such user" and "wrong password" -- revealing which
-    # one is true lets an attacker enumerate valid emails on the platform.
     invalid_credentials = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password"
     )
@@ -83,8 +100,36 @@ def logout(response: Response):
 
 @router.get("/me", response_model=UserPublic)
 def read_current_user(current_user: User = Depends(get_current_user)):
-    """
-    Proves the whole chain works: cookie -> decode -> DB lookup -> real user
-    returned. This is also the pattern every future protected route follows.
-    """
     return current_user
+
+
+@router.get("/google/login")
+async def google_login(request: Request):
+    """Kicks off the flow -- redirects the browser to Google's consent screen."""
+    return await oauth.google.authorize_redirect(request, settings.GOOGLE_REDIRECT_URI)
+
+
+@router.get("/google/callback")
+async def google_callback(request: Request, db: Session = Depends(get_db)):
+    """
+    Google redirects here after the user approves. We exchange the code
+    for their verified profile, resolve/create the local User via
+    get_or_create_user_from_google, then log them in exactly like any
+    other user -- same cookie, same downstream behavior.
+    """
+    token = await oauth.google.authorize_access_token(request)
+    userinfo = token.get("userinfo")
+    if userinfo is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Google did not return user info")
+
+    google_id = userinfo["sub"]
+    email = userinfo["email"]
+    name = userinfo.get("name", email.split("@")[0])
+
+    user = get_or_create_user_from_google(db, google_id=google_id, email=email, name=name)
+
+    # Redirect to the frontend after login. Placeholder target until the
+    # real frontend exists -- update this once Stage 11 (frontend) starts.
+    response = RedirectResponse(url="http://localhost:3000/dashboard")
+    _set_auth_cookie(response, user.id)
+    return response
