@@ -1,0 +1,58 @@
+Title,Body,Label,Stage,Area,Item Type,Priority,Status,Decision
+Domain model + RBAC design,Locked in DOMAIN_MODEL.md,docs,Stage 0-2 (Done),Docs,Build Task,Now,Done,
+users/coach_profiles/coach_clients models,First migration - 4 commits on GitHub,backend,Stage 0-2 (Done),Backend,Build Task,Now,Done,
+coach_billing + phone_number,Schema only - no enforcement logic yet,backend,Stage 0-2 (Done),Backend,Build Task,Now,Done,
+client_intro table,Pending-request visibility,backend,Stage 0-2 (Done),Backend,Build Task,Now,Done,
+Permission logic + RBAC tests,get_access_level / require_access - verify committed tonight,backend,Stage 0-2 (Done),Backend,Build Task,Now,In Review,
+Signup/login email+password,JWT issuance,backend,Stage 3 Auth,Backend,Build Task,Now,Todo,
+Google OAuth,,backend,Stage 3 Auth,Backend,Build Task,Now,Todo,
+Wire require_access to real current_user,Replaces test fixtures with real auth,backend,Stage 3 Auth,Backend,Build Task,Now,Todo,
+daily_logs CRUD,,backend,Stage 4 CRUD,Backend,Build Task,Next,Backlog,
+plans + plan_metrics CRUD,,backend,Stage 4 CRUD,Backend,Build Task,Next,Backlog,
+routines + routine_exercises CRUD,,backend,Stage 4 CRUD,Backend,Build Task,Next,Backlog,
+workout_sessions + workout_sets CRUD,,backend,Stage 4 CRUD,Backend,Build Task,Next,Backlog,
+exercise_catalog + aliases seed data,,backend,Stage 4 CRUD,Backend,Build Task,Next,Backlog,
+Client list endpoint,,backend,Stage 5 Coach Endpoints,Backend,Build Task,Next,Backlog,
+Accept/reject pending request,,backend,Stage 5 Coach Endpoints,Backend,Build Task,Next,Backlog,
+Assign plan/routine to client,,backend,Stage 5 Coach Endpoints,Backend,Build Task,Next,Backlog,
+Browse public coach profiles,,backend,Stage 6 Individual Endpoints,Backend,Build Task,Next,Backlog,
+Request coaching (creates client_intro),,backend,Stage 6 Individual Endpoints,Backend,Build Task,Next,Backlog,
+Compliance score calculation endpoint,,backend,Stage 7 Dashboard Data,Backend,Build Task,Later,Backlog,
+Weekly summary endpoint,,backend,Stage 7 Dashboard Data,Backend,Build Task,Later,Backlog,
+Body photos upload/list,,backend,Stage 7 Dashboard Data,Backend,Build Task,Later,Backlog,
+Provision VPS,,infra,Stage 8 Hosting,Infra,Build Task,Later,Backlog,
+Deploy Postgres + FastAPI,,infra,Stage 8 Hosting,Infra,Build Task,Later,Backlog,
+HTTPS via reverse proxy,,infra,Stage 8 Hosting,Infra,Build Task,Later,Backlog,
+Automated DB backups,Basic hygiene not a feature - do not skip,infra,Stage 8 Hosting,Infra,Build Task,Later,Backlog,
+Broaden pytest suite beyond permissions,,backend,Stage 9 Testing,Backend,Build Task,Later,Backlog,
+Manual QA of every endpoint,,backend,Stage 9 Testing,Backend,Build Task,Later,Backlog,
+Daily personal use Nov-Jan,"Bug fixes only, no new features",milestone,Stage 10 Dogfooding,Docs,Build Task,Later,Backlog,
+Individual dashboard - shared components,Metric card / trend chart / compliance ring,frontend,Stage 11 Frontend,Frontend,Build Task,Someday,Backlog,
+Individual dashboard - assemble,,frontend,Stage 11 Frontend,Frontend,Build Task,Someday,Backlog,
+Coach dashboard - client list + detail view,Reuses individual dashboard components,frontend,Stage 11 Frontend,Frontend,Build Task,Someday,Backlog,
+Enforce included_slots on accept,Block/charge past 15 free clients,business,Deferred,Business,Build Task,Someday,Backlog,
+Revenue/churn dashboard,Wait for real usage,business,Deferred,Business,Build Task,Someday,Backlog,
+Coach performance overview,Relevant once 2-coach model exists,business,Deferred,Business,Build Task,Someday,Backlog,
+Duplicate account fraud flags,Admin-side detection not DB prevention,business,Deferred,Business,Build Task,Someday,Backlog,
+React Native/Expo client app,Year 2+,frontend,Deferred,Frontend,Build Task,Someday,Backlog,
+Dark mode / light mode,,idea,Unscheduled,Frontend,Feature Idea,,Backlog,Undecided
+Unit preference kg/lb,,idea,Unscheduled,Frontend,Feature Idea,,Backlog,Undecided
+Push/email reminders,,idea,Unscheduled,Backend,Feature Idea,,Backlog,Undecided
+Multi-language toggle,,idea,Unscheduled,Frontend,Feature Idea,,Backlog,Undecided
+Body measurements beyond weight,,idea,Unscheduled,Backend,Feature Idea,,Backlog,Undecided
+Before/after photo slider,,idea,Unscheduled,Frontend,Feature Idea,,Backlog,Undecided
+Per-lift 1RM progression charts,,idea,Unscheduled,Frontend,Feature Idea,,Backlog,Undecided
+Correlation views (sleep vs compliance),Existed as stub pages in old build,idea,Unscheduled,Frontend,Feature Idea,,Backlog,Undecided
+Raw data export CSV/JSON,Prioritize - matches no-lock-in philosophy,idea,Unscheduled,Backend,Feature Idea,,Backlog,Approved
+Wearable integration,Large scope - treat as separate project,idea,Unscheduled,Backend,Feature Idea,,Backlog,Undecided
+Barcode food scanning,Likely out of scope,idea,Unscheduled,Backend,Feature Idea,,Backlog,Undecided
+In-app coach-client messaging,,idea,Unscheduled,Backend,Feature Idea,,Backlog,Undecided
+Video form-check upload,,idea,Unscheduled,Backend,Feature Idea,,Backlog,Undecided
+In-app payment collection,Razorpay/Stripe,idea,Unscheduled,Business,Feature Idea,,Backlog,Undecided
+Weekly subjective check-in forms,,idea,Unscheduled,Backend,Feature Idea,,Backlog,Undecided
+Private coach notes on client,,idea,Unscheduled,Backend,Feature Idea,,Backlog,Undecided
+Reusable routine template library,,idea,Unscheduled,Backend,Feature Idea,,Backlog,Undecided
+Waitlist when coach at capacity,,idea,Unscheduled,Backend,Feature Idea,,Backlog,Undecided
+2-coach practice model,Real architecture change not a toggle - decide deliberately,idea,Unscheduled,Backend,Feature Idea,,Backlog,Undecided
+Streaks/badges,Private-only version may be ok,idea,Unscheduled,Frontend,Feature Idea,,Backlog,Undecided
+Leaderboards,Conflicts with no-social-feed principle,idea,Unscheduled,Frontend,Feature Idea,,Backlog,Philosophy Conflict
