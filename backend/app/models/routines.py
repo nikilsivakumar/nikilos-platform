@@ -30,7 +30,7 @@ class Routine(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     created_by: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=True)
     assigned_to: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=True)
-    is_template: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    is_template: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false", nullable=False)
     template_group: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     template_order: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
