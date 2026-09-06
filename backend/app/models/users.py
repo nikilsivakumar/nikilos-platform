@@ -1,12 +1,18 @@
+import enum
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import String, DateTime
+from sqlalchemy import String, DateTime, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
+
 from app.db.session import Base
 
+
+class BiologicalSex(str, enum.Enum):
+    male = "male"
+    female = "female"
 
 class User(Base):
     """
@@ -37,6 +43,12 @@ class User(Base):
     # to reset their free client slots — not a complete fix (see
     # docs/DOMAIN_MODEL.md billing notes), just raises the cost of doing it.
     phone_number: Mapped[Optional[str]] = mapped_column(String(20), unique=True, nullable=True)
+
+    # Optional, used only for body-fat % estimation (Navy method needs
+    # sex-specific formulas). Not collected or shown anywhere else.
+    biological_sex: Mapped[Optional[BiologicalSex]] = mapped_column(
+        Enum(BiologicalSex, name="biological_sex"), nullable=True
+    )
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 

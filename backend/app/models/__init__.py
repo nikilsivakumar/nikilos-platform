@@ -15,3 +15,4 @@ from app.models.plans import Plan, PlanMetrics  # noqa: F401
 from app.models.exercises import ExerciseCatalog, ExerciseAlias, ExerciseCategory, MuscleGroup  # noqa: F401
 from app.models.routines import Routine, RoutineExercise  # noqa: F401
 from app.models.workouts import WorkoutSession, WorkoutSet  # noqa: F401
+from app.models.body_measurements import BodyMeasurement  # noqa: F401

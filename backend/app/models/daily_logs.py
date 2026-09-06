@@ -30,6 +30,8 @@ class DailyLog(Base):
     weight_kg: Mapped[Optional[Decimal]] = mapped_column(Numeric(5, 2), nullable=True)
     calories: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     protein_g: Mapped[Optional[Decimal]] = mapped_column(Numeric(6, 2), nullable=True)
+    carbs_g: Mapped[Optional[Decimal]] = mapped_column(Numeric(6, 2), nullable=True)
+    fat_g: Mapped[Optional[Decimal]] = mapped_column(Numeric(6, 2), nullable=True)
     steps: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     sleep_hours: Mapped[Optional[Decimal]] = mapped_column(Numeric(4, 2), nullable=True)
     compliance_score: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
