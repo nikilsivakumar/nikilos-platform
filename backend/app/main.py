@@ -5,7 +5,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from app.api import auth, users
 from app.core.config import settings
 
-from app.api import auth, users, daily_logs, body_measurements, plans
+from app.api import auth, users, daily_logs, body_measurements, plans,routines
 
 app = FastAPI(title="NikilOS Platform API", version="0.1.0")
 
@@ -30,7 +30,7 @@ app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(daily_logs.router, prefix="/daily-logs", tags=["daily-logs"])
 app.include_router(body_measurements.router, prefix="/body-measurements", tags=["body-measurements"])
 app.include_router(plans.router, prefix="/plans", tags=["plans"])
-
+app.include_router(routines.router, prefix="/routines", tags=["routines"])
 
 @app.get("/health")
 def health():

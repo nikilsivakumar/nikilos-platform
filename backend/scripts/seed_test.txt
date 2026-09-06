@@ -1,0 +1,13 @@
+ id |         name          |  category  | primary_muscle_group                                                                                             
+----+-----------------------+------------+----------------------
+  1 | Barbell Bench Press   | loaded     | chest
+  2 | Barbell Back Squat    | loaded     | legs
+  3 | Conventional Deadlift | loaded     | back
+  4 | Overhead Press        | loaded     | shoulders
+  5 | Barbell Row           | loaded     | back
+  6 | Pull-Up               | bodyweight | back                                                                                                             
+  7 | Push-Up               | bodyweight | chest                                                                                                            
+  8 | Barbell Curl          | loaded     | biceps                                                                                                           
+  9 | Triceps Pushdown      | loaded     | triceps                                                                                                          
+ 10 | Plank                 | no_1rm     | core                                                                                                             
+(10 rows)                                          
