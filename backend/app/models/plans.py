@@ -2,7 +2,7 @@ from datetime import date as date_type, datetime
 from decimal import Decimal
 from typing import Optional
 
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, Numeric, String
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Index, Integer, Numeric, String, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
@@ -12,19 +12,33 @@ from app.db.session import Base
 class Plan(Base):
     """
     owner_id = whose plan this is. created_by = who made it (self, or a
-    coach). Self-made plans have owner_id == created_by -- same table,
-    same shape, no separate "self plan" vs "coach plan" type, matching
-    the "one person, layered capabilities" principle from DOMAIN_MODEL.md.
+    coach). Self-made plans have owner_id == created_by.
+
+    The partial unique index below enforces "at most one active plan per
+    owner" at the DATABASE level -- a hard backstop in case application
+    code (app/api/plans.py) ever fails to deactivate an old plan before
+    activating a new one. Without this, calculate_compliance_score's
+    .filter(is_active == True).first() would silently pick an arbitrary
+    row if two were ever active at once -- exactly the kind of bug that's
+    invisible until it quietly gives someone the wrong compliance score.
     """
 
     __tablename__ = "plans"
+    __table_args__ = (
+        Index(
+            "uq_one_active_plan_per_owner",
+            "owner_id",
+            unique=True,
+            postgresql_where=text("is_active = true"),
+        ),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     created_by: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
 
     name: Mapped[str] = mapped_column(String(255), nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true", nullable=False)
     start_date: Mapped[Optional[date_type]] = mapped_column(Date, nullable=True)
     end_date: Mapped[Optional[date_type]] = mapped_column(Date, nullable=True)
 
@@ -35,14 +49,6 @@ class Plan(Base):
 
 
 class PlanMetrics(Base):
-    """
-    One targets row per plan -- calorie/protein/step/sleep targets that
-    daily_logs.compliance_score gets scored against. Kept as its own table
-    (not columns on plans) per the original "relational, never JSON"
-    principle -- makes it trivial to add a new target type later without
-    touching the plans table at all.
-    """
-
     __tablename__ = "plan_metrics"
 
     id: Mapped[int] = mapped_column(primary_key=True)
