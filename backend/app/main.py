@@ -5,6 +5,8 @@ from starlette.middleware.sessions import SessionMiddleware
 from app.api import auth, users
 from app.core.config import settings
 
+from app.api import auth, users, daily_logs, body_measurements
+
 app = FastAPI(title="NikilOS Platform API", version="0.1.0")
 
 # Loosened for local dev only -- tighten allow_origins before any real deployment.
@@ -25,6 +27,8 @@ app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(users.router, prefix="/users", tags=["users"])
+app.include_router(daily_logs.router, prefix="/daily-logs", tags=["daily-logs"])
+app.include_router(body_measurements.router, prefix="/body-measurements", tags=["body-measurements"])
 
 
 @app.get("/health")
